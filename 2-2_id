@@ -24,14 +24,20 @@ module id(
 	output reg                    wreg_o
 );
 
+  //取得指令的指令码，功能码，
+  //对于ori指令只需通过判断第26-31bit的值，即可判断是否是ori指令
   wire[5:0] op = inst_i[31:26];
   wire[4:0] op2 = inst_i[10:6];
   wire[5:0] op3 = inst_i[5:0];
   wire[4:0] op4 = inst_i[20:16];
+  
+  //保存指令执行需要的立即数
   reg[`RegBus]	imm;
+  
+  //指示指令是否有效
   reg instvalid;
   
- 
+ //第一段：对指令进行译码
 	always @ (*) begin	
 		if (rst == `RstEnable) begin
 			aluop_o <= `EXE_NOP_OP;
