@@ -2,11 +2,11 @@
 
 module pc_reg(
 
-	input  wire	              clk,
-	input  wire	              rst,
+	input  wire	              clk,      //1bit，时钟信号
+	input  wire	              rst,      //1bit，复位信号
 	
-	output reg[`InstAddrBus]      pc,
-	output reg                    ce
+	output reg[`InstAddrBus]      pc,       //32bit，要读取的指令地址
+	output reg                    ce        //1bit，指令存储器使能信号
 	
 );
 
