@@ -2,7 +2,7 @@
 
 module ex(
 
-	input wire										rst,
+	input wire	rst,
 	
 	//送到执行阶段的信息
 	input wire[`AluOpBus]         aluop_i,
@@ -15,7 +15,7 @@ module ex(
 	//执行的结果
 	output reg[`RegAddrBus]       wd_o,
 	output reg                    wreg_o,
-	output reg[`RegBus]						wdata_o
+	output reg[`RegBus]	wdata_o
 	
 );
 
@@ -24,32 +24,32 @@ module ex(
  
  ////////第一段：依据aluop_i指示的运算子类型进行运算，此处只有逻辑“或”运算//////
  always @ (*) begin
-		if(rst == `RstEnable) begin
-			logicout <= `ZeroWord;
-		end else begin
-			case (aluop_i)
-				`EXE_OR_OP:			begin
-					logicout <= reg1_i | reg2_i;
-				end
-				default:				begin
-					logicout <= `ZeroWord;
-				end
-			endcase
-		end    //if
-	end      //always
+        if(rst == `RstEnable) begin
+		logicout <= `ZeroWord;
+	end else begin
+		case (aluop_i)
+			`EXE_OR_OP:	begin
+				logicout <= reg1_i | reg2_i;
+			end
+			default:	begin
+			        logicout <= `ZeroWord;
+			end
+		endcase
+	end    //if
+  end      //always
 
 ////////第二段：依据aluse1_i指示的运算类型，选择一个运算结果作为最终结果，此处只有逻辑运算结果//////
  always @ (*) begin
-	  wd_o <= wd_i;	 	 	
-	  wreg_o <= wreg_i;
-	  case ( alusel_i ) 
-	 	     `EXE_RES_LOGIC:		begin
+	wd_o <= wd_i;	 	 	
+	wreg_o <= wreg_i;
+	case ( alusel_i ) 
+	 	  `EXE_RES_LOGIC:	begin
 	 		   wdata_o <= logicout;
-	 	end
-	 	default:		begin
+	 	   end
+	 	   default:	        begin
 	 		   wdata_o <= `ZeroWord;
-	 	end
-	  endcase
+	 	   end
+	endcase
  end	
 
 endmodule
