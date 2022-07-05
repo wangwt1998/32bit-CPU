@@ -51,7 +51,7 @@ module id(
 			reg1_addr_o <= `NOPRegAddr;
 			reg2_addr_o <= `NOPRegAddr;
 			imm <= 32'h0;			
-	  end else begin
+	        end else begin
 			aluop_o <= `EXE_NOP_OP;
 			alusel_o <= `EXE_RES_NOP;
 			wd_o <= inst_i[15:11];
@@ -63,7 +63,7 @@ module id(
 			reg2_addr_o <= inst_i[20:16];//默认通过regflie读端口2读取的寄存器地址	
 			imm <= `ZeroWord;			
 		  
-		  case (op)
+		    case (op)
 		  	`EXE_ORI:	begin                        //依据op的值判断是否为ori指令
 		  		//ori指令需要将结果写入目的寄存器，所以wreg_o为WriteEnable
 				wreg_o <= `WriteEnable;		
@@ -89,12 +89,12 @@ module id(
 				//ori指令是有效指令
 				instvalid <= `InstValid;	
 		  	
-			end 							 
+		        end 							 
 		        default:begin
 		        end
-		  endcase		  //case op			
-		end       //if
-	end         //always
+		    endcase		  //case op			
+		end                       //if
+	end                               //always
 	
 
 //////第二段：确定进行运算的操作数1//////
