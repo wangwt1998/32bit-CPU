@@ -1,5 +1,7 @@
 `include "defines.v"
 
+//取值阶段，去除指令存储器中的指令，同时pc值递增，准备取下一条指令。
+
 module pc_reg(
 
 	input  wire	              clk,      //1bit，时钟信号
@@ -23,6 +25,7 @@ module pc_reg(
 			pc <= 32'h00000000;    //指令存储器禁用的时候，pc为0
 		end else begin
 	 		pc <= pc + 4'h4;       //指令存储器使能的时候，pc的值每时钟周期加4
+			                       //因为我们设计的open MIPS是按照字节寻址的，一条指令32位，所以每周期加4
 		end
 	end
 	
