@@ -1,5 +1,7 @@
 `include "defines.v"
 
+//regfile模块实现了32个32位寄存器，可以同时进行两个寄存器的读操作和一个寄存器的写操作
+
 module regfile(
 
 	input wire			clk,          //1bit，时钟信号
@@ -35,24 +37,28 @@ module regfile(
 			end
 		end
 	end
+        //当复位信号无效，且写使能信号有效，写入的地址不是0地址的话，就把数据写入进去
 	
 //////第三段：读端口1的读操作//////
-	always @ (*) begin
-		if(rst == `RstEnable) begin
+	always @ (*) begin  //注意这里的代码表示，是组合逻辑电路，上面有CLK的是时序电路
+		if(rst == `RstEnable) begin                       //首先判断复位信号，如果有效就读出0
 			  rdata1 <= `ZeroWord;
-	        end else if(raddr1 == `RegNumLog2'h0) begin
+	        end else if(raddr1 == `RegNumLog2'h0) begin       //其次判断读取的地址，如果地址是0就读出0
 	  		  rdata1 <= `ZeroWord;
-	        end else if((raddr1 == waddr) && (we == `WriteEnable) && (re1 == `ReadEnable)) begin
+	        end else if((re1 == `ReadEnable) && (we == `WriteEnable) && (raddr1 == waddr)) begin 
 	  	          rdata1 <= wdata;
-	        end else if(re1 == `ReadEnable) begin
+			                                          //再判断写入端口，如果写使能和读使能都有效，且地址相同，那么
+								  //直接把写入的数据给到读出端口
+								   
+	        end else if(re1 == `ReadEnable) begin             //如果以上特殊情况都没满足，来到这一条，只是读使能有效，正常把数据读出就可以
 	                  rdata1 <= regs[raddr1];
-	        end else begin
+	        end else begin                                    //第一个读寄存器端口不能使用时，直接输出0
 	                  rdata1 <= `ZeroWord;
 	        end
 	end
 
 //////第四段：读端口2的读操作//////
-	always @ (*) begin
+	always @ (*) begin  //这一段和上面一样
 		if(rst == `RstEnable) begin
 			  rdata2 <= `ZeroWord;
 	        end else if(raddr2 == `RegNumLog2'h0) begin
