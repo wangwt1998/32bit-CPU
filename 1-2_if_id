@@ -1,5 +1,7 @@
 `include "defines.v"
 
+//IFID模块暂时保存指令，以及指令地址，在下一个周期传递到译码阶段，代码比较简单，只是简单的传递
+
 module if_id(
 
 	input	wire		clk,                   //1bit，复位信号
