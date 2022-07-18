@@ -30,5 +30,5 @@ module mem_wb(
 			
 
 endmodule
-//回写阶段实际上是在regfile中完成的，mem/wb的输出wb_wreg，wb_wd，wb_wdata分别连接到regflie模块上的we，waddr，wdata，所以会将指令的运算结果
-//存入目的寄存器
+//回写阶段实际上是在regfile中完成的，mem/wb的输出wb_wreg，wb_wd，wb_wdata分别连接到regflie模块上的we，waddr，wdata，
+//所以会将指令的运算结果存入目的寄存器。
