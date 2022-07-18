@@ -24,6 +24,16 @@ module id(
 	output reg[`RegBus]           reg2_o,             //32bit，源操作数2
 	output reg                    wreg_o              //1bit，是否有要写入的目的寄存器
 	output reg[`RegAddrBus]       wd_o,               //5bit，要写入的目的寄存器地址
+	
+	//为了解决数据前推，处于执行阶段的指令要写入的目的寄存器信息
+	input wire		      ex_wreg_i,
+	input wire[`RegBus]	      ex_wdata_i,
+	input wire[`RegAddrBus]       ex_wd_i,
+	
+	//为了解决数据前推，处于访存阶段的指令要写入的目的寄存器信息
+	input wire		      mem_wreg_i,
+	input wire[`RegBus]           mem_wdata_i,
+	input wire[`RegAddrBus]       mem_wd_i,
 );
 
   //取得指令的指令码，功能码，
