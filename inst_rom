@@ -2,10 +2,9 @@
 
 module inst_rom(
 
-//input	wire										clk,
-	input wire                    ce,
-	input wire[`InstAddrBus]			addr,
-	output reg[`InstBus]					inst
+	input wire                    ce,          //1bit，使能信号
+	input wire[`InstAddrBus]      addr,        //32bit，输入的要读取的指令地址
+	output reg[`InstBus]	      inst         //32bit，读出的指令
 	
 );
 
@@ -13,14 +12,17 @@ module inst_rom(
 	reg[`InstBus]  inst_mem[0:`InstMemNum-1];
 
   //使用文件inst_rom.data初始化指令存储器
-	initial $readmemh ( "inst_rom.data", inst_mem );
+	initial $readmemh ( "inst_rom.data", inst_mem );  
+	            //initial语句只执行一次，赋初值常用
+		    //系统函数$readmemh，表示从inst_rom.data文件中读取数据以初始化inst_mem
+		    //inst_rom.data是文本文件，里面存储的是指令，函数会将文件里的数据一次填写到inst_mem数组中
 
   //当复位信号无效时，依据输入的地址，给出指令存储器ROM中对应的元素
 	always @ (*) begin
 		   if (ce == `ChipDisable) begin
 		 	        inst <= `ZeroWord;
-	     end else begin
-		          inst <= inst_mem[addr[`InstMemNumLog2+1:2]];
+	           end else begin
+		                inst <= inst_mem[addr[`InstMemNumLog2+1:2]];
 		   end
 	end
 
