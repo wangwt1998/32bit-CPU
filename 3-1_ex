@@ -19,10 +19,10 @@ module ex(
 	
 );
 
-  //保存逻辑运算结果
-  reg[`RegBus] logicout;
+  reg[`RegBus] logicout;     //保存逻辑运算结果
+  reg[`RegBus] shiftres;     //保存移位运算结果
  
- ////////第一段：依据aluop_i指示的运算子类型进行运算，此处只有逻辑“或”运算//////
+ //进行逻辑运算
  always @ (*) begin
         if(rst == `RstEnable) begin
 		logicout <= `ZeroWord;
