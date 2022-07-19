@@ -76,38 +76,124 @@ module id(
 			imm <= `ZeroWord;		         //立即数，初始值置0
 		  
 		  //把上面赋初值的8个变量依据指令的不同赋上相应的值
-		    case (op)
-		  	`EXE_ORI:	begin                        //依据op的值判断是否为ori指令
-		  		//ori指令需要将结果写入目的寄存器，所以wreg_o为WriteEnable
-				wreg_o <= `WriteEnable;		
-				
-			        //运算的子类型是逻辑或运算
+		  
+		  case (op)
+		    `EXE_SPECIAL_INST:begin
+		    	     case (op2)
+		    		5'b00000:begin
+		    			     case (op3)
+		    				     `EXE_OR:begin
+		    					        wreg_o <= `WriteEnable;		
+								aluop_o <= `EXE_OR_OP;
+		  						alusel_o <= `EXE_RES_LOGIC; 	
+								reg1_read_o <= 1'b1;	reg2_read_o <= 1'b1;
+		  						instvalid <= `InstValid;	
+								end  
+		    				     `EXE_AND:begin
+		    					        wreg_o <= `WriteEnable;		
+								aluop_o <= `EXE_AND_OP;
+		  						alusel_o <= `EXE_RES_LOGIC;	  
+								reg1_read_o <= 1'b1;	reg2_read_o <= 1'b1;	
+		  						instvalid <= `InstValid;	
+								end  	
+		    				     `EXE_XOR:begin
+		    					        wreg_o <= `WriteEnable;		
+								aluop_o <= `EXE_XOR_OP;
+		  						alusel_o <= `EXE_RES_LOGIC;		
+								reg1_read_o <= 1'b1;	reg2_read_o <= 1'b1;	
+		  						instvalid <= `InstValid;	
+								end  				
+		    				     `EXE_NOR:begin
+		    					        wreg_o <= `WriteEnable;		
+								aluop_o <= `EXE_NOR_OP;
+		  						alusel_o <= `EXE_RES_LOGIC;		
+								reg1_read_o <= 1'b1;	reg2_read_o <= 1'b1;	
+		  						instvalid <= `InstValid;	
+								end 
+						     `EXE_SLLV: begin
+								wreg_o <= `WriteEnable;		
+								aluop_o <= `EXE_SLL_OP;
+		  						alusel_o <= `EXE_RES_SHIFT;		
+								reg1_read_o <= 1'b1;	reg2_read_o <= 1'b1;
+		  						instvalid <= `InstValid;	
+								end 
+						     `EXE_SRLV: begin
+								wreg_o <= `WriteEnable;		
+								aluop_o <= `EXE_SRL_OP;
+		  						alusel_o <= `EXE_RES_SHIFT;		
+								reg1_read_o <= 1'b1;	reg2_read_o <= 1'b1;
+		  						instvalid <= `InstValid;	
+								end 					
+						     `EXE_SRAV: begin
+								wreg_o <= `WriteEnable;		
+								aluop_o <= `EXE_SRA_OP;
+		  						alusel_o <= `EXE_RES_SHIFT;		
+								reg1_read_o <= 1'b1;	reg2_read_o <= 1'b1;
+		  						instvalid <= `InstValid;			
+		  						end			
+						     `EXE_SYNC: begin
+								wreg_o <= `WriteDisable;		
+								aluop_o <= `EXE_NOP_OP;
+		  						alusel_o <= `EXE_RES_NOP;		
+								reg1_read_o <= 1'b0;	reg2_read_o <= 1'b1;
+		  						instvalid <= `InstValid;	
+								end								  									
+					              default:begin
+						                end
+					     endcase  //op3
+				         end
+				 default:begin
+				         end
+			     endcase  //op2
+			   end									  
+		  
+		  //从这往下再判断op不为0的情况：
+		    `EXE_ORI:begin                        //ORI指令
+		  		wreg_o <= `WriteEnable;		
 				aluop_o <= `EXE_OR_OP;
-		  		
-				//运算的类型是逻辑运算
-				alusel_o <= `EXE_RES_LOGIC; 
-				
-				//需要通过regfile的读端口1读取寄存器
-				reg1_read_o <= 1'b1;	
-				
-				//不需要通过regfile的读端口2读取寄存器
-				reg2_read_o <= 1'b0;	  	
-				
-				//指令执行需要的立即数
+		  		alusel_o <= `EXE_RES_LOGIC; 
+				reg1_read_o <= 1'b1;	reg2_read_o <= 1'b0;	  	
 				imm <= {16'h0, inst_i[15:0]};		
-				
-			        //指令执行要写的目的寄存器地址
 				wd_o <= inst_i[20:16];
-				
-				//ori指令是有效指令
 				instvalid <= `InstValid;	
-		  	
-		        end 							 
-		        default:begin
-		        end
-		    endcase		  //case op			
-		end                       //if
-	end                               //always
+		  	end
+		    `EXE_ANDI:begin
+		  		wreg_o <= `WriteEnable;		
+				aluop_o <= `EXE_AND_OP;
+		  		alusel_o <= `EXE_RES_LOGIC;	
+				reg1_read_o <= 1'b1;	reg2_read_o <= 1'b0;	  	
+				imm <= {16'h0, inst_i[15:0]};		
+				wd_o <= inst_i[20:16];		  	
+				instvalid <= `InstValid;	
+				end	 	
+		    `EXE_XORI:begin
+		  		wreg_o <= `WriteEnable;		
+				aluop_o <= `EXE_XOR_OP;
+		  		alusel_o <= `EXE_RES_LOGIC;	
+				reg1_read_o <= 1'b1;	reg2_read_o <= 1'b0;	  	
+				imm <= {16'h0, inst_i[15:0]};		
+				wd_o <= inst_i[20:16];		  	
+				instvalid <= `InstValid;	
+				end	 		
+		    `EXE_LUI:begin
+		  		wreg_o <= `WriteEnable;		
+				aluop_o <= `EXE_OR_OP;
+		  		alusel_o <= `EXE_RES_LOGIC; 
+				reg1_read_o <= 1'b1;	reg2_read_o <= 1'b0;	  	
+				imm <= {inst_i[15:0], 16'h0};		
+				wd_o <= inst_i[20:16];		  	
+				instvalid <= `InstValid;	
+				end		
+		    `EXE_PREF:begin
+		  		wreg_o <= `WriteDisable;		
+				aluop_o <= `EXE_NOP_OP;
+		  		alusel_o <= `EXE_RES_NOP; 
+				reg1_read_o <= 1'b0;	reg2_read_o <= 1'b0;	  	  	
+				instvalid <= `InstValid;	
+				end										  	
+		     default:begin
+		                end
+		  endcase  //case op
 	
 //由于数据前推，给reg1_o的赋值增加了两种情况：
  //1. 如果regflie模块读端口1要读取的寄存器就是执行阶段要写的目的寄存器，那么直接把执行阶段的结果ex_wdata_i作为reg1_o的值；
