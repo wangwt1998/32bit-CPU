@@ -154,13 +154,13 @@ module id(
 								end
 							`EXE_MTHI: begin
 								wreg_o <= `WriteDisable;		
-								aluop_o <= `EXE_MTHI_OP;
+								aluop_o <= `EXE_MTHI_OP;   //mthi和mtlo没有运算类型，给HI和LO赋值
 		  						reg1_read_o <= 1'b1;	reg2_read_o <= 1'b0; 
 								instvalid <= `InstValid;	
 								end
 							`EXE_MTLO: begin
 								wreg_o <= `WriteDisable;		
-								aluop_o <= `EXE_MTLO_OP;
+								aluop_o <= `EXE_MTLO_OP;   //mthi和mtlo没有运算类型，给HI和LO赋值
 		  						reg1_read_o <= 1'b1;	reg2_read_o <= 1'b0; 
 								instvalid <= `InstValid;	
 								end
@@ -169,22 +169,24 @@ module id(
 		  						alusel_o <= `EXE_RES_MOVE;   
 								reg1_read_o <= 1'b1;	reg2_read_o <= 1'b1;
 		  						instvalid <= `InstValid;
-								if(reg2_o != `ZeroWord) begin
+								   if(reg2_o != `ZeroWord) begin        
 	 								wreg_o <= `WriteEnable;
 	 							   end else begin
 	 								wreg_o <= `WriteDisable;
 	 							   end
+								   //wreg_o的值要根据寄存器读出的值来确定，所以后面用if语句来写
 								end
 							`EXE_MOVZ: begin
 								aluop_o <= `EXE_MOVZ_OP;
 		  						alusel_o <= `EXE_RES_MOVE;   
 								reg1_read_o <= 1'b1;	reg2_read_o <= 1'b1;
 		  						instvalid <= `InstValid;
-								if(reg2_o == `ZeroWord) begin
+								   if(reg2_o == `ZeroWord) begin
 	 								wreg_o <= `WriteEnable;
 	 							   end else begin
 	 								wreg_o <= `WriteDisable;
-	 							   end		  							
+	 							   end
+								   //wreg_o的值要根据寄存器读出的值来确定，所以后面用if语句来写
 								end		  		
 						      
 						      default:begin
