@@ -150,16 +150,17 @@ end  //always
 	endcase
  end	
  
+ //如果是mthi和mtlo指令，那么需要给出whilo_o（使能端，是否要写入HILO）,hi_o（写入HI的值）,lo_o（写入LO的值）的值
  always @ (*) begin
 	if(rst == `RstEnable) begin
 		whilo_o <= `WriteDisable;
 		hi_o <= `ZeroWord;
 		lo_o <= `ZeroWord;		
-	end else if(aluop_i == `EXE_MTHI_OP) begin
+	end else if(aluop_i == `EXE_MTHI_OP) begin  //判断运算子类型，是HI，使能端enable，寄存器1口读出的值给到HI，LO的值保持不变
 		whilo_o <= `WriteEnable;
 		hi_o <= reg1_i;
 		lo_o <= LO;
-	end else if(aluop_i == `EXE_MTLO_OP) begin
+	end else if(aluop_i == `EXE_MTLO_OP) begin  //判断运算子类型，是LO，使能端enable，寄存1口读出的值给到LO，HI的值保持不变
 		whilo_o <= `WriteEnable;
 		hi_o <= HI;
 		lo_o <= reg1_i;
