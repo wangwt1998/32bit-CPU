@@ -9,11 +9,18 @@ module mem_wb(
 	input wire[`RegAddrBus]       mem_wd,                //5bit，访存阶段传过来的，要写入的目的寄存器地址
 	input wire                    mem_wreg,              //1bit，访存阶段传过来的，是否有要写入的目的寄存器
 	input wire[`RegBus]	      mem_wdata,             //32bit，访存阶段传过来的，要写入目的寄存器的值
+	input wire[`RegBus]           mem_hi,                //32bit，访存阶段传过来的，要写入HI的值
+	input wire[`RegBus]           mem_lo,                //32bit，访存阶段传过来的，要写入LO的值
+	input wire                    mem_whilo,	     //1bit，访存阶段传过来的，是否要写入HILO
 
 	//送到回写阶段的信息
 	output reg[`RegAddrBus]      wb_wd,                  //5bit，送到回写阶段的，要写入的目的寄存器地址
 	output reg                   wb_wreg,                //1bit，送到回写阶段的，是否有要写入的目的寄存器
-	output reg[`RegBus]	     wb_wdata                //32bit，送到回写阶段的，要写入目的寄存器的值	       
+	output reg[`RegBus]	     wb_wdata                //32bit，送到回写阶段的，要写入目的寄存器的值	
+	output reg[`RegBus]          wb_hi,                  //32bit，送到回写阶段的，要写入HI的值
+	output reg[`RegBus]          wb_lo,                  //32bit，送到回写阶段的，要写入LO的值
+	output reg                   wb_whilo 	             //1bit，送到回写阶段的，是否要写入HILO
+	
 );
 
 	always @ (posedge clk) begin   //一个简单的时序逻辑电路
@@ -21,10 +28,16 @@ module mem_wb(
 			        wb_wd <= `NOPRegAddr;        //复位，地址为0地址
 			        wb_wreg <= `WriteDisable;    //复位，写入使能信号无效
 		                wb_wdata <= `ZeroWord;       //复位，写入的值为0	
+				wb_hi <= `ZeroWord;
+		                wb_lo <= `ZeroWord;
+		                wb_whilo <= `WriteDisable;	
 		    end else begin
-			        wb_wd <= mem_wd;             //将三个值依次传递下去就可以
+			        wb_wd <= mem_wd;             //将几个值依次传递下去就可以
 			        wb_wreg <= mem_wreg;
 			        wb_wdata <= mem_wdata;
+				wb_hi <= mem_hi;
+			        wb_lo <= mem_lo;
+			        wb_whilo <= mem_whilo;	
 		    end //if
 	end  //always
 			
