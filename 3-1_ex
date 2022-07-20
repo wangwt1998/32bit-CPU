@@ -111,22 +111,22 @@ always @ (*) begin
 	        moveres <= `ZeroWord;
 	end else begin
 	        moveres <= `ZeroWord;
-	    case (aluop_i)
-	   	`EXE_MFHI_OP:	begin
-	   		moveres <= HI;
-	   	end
-	   	`EXE_MFLO_OP:	begin
+	     case (aluop_i)
+	   	   `EXE_MFHI_OP:	begin
+	   		moveres <= HI;  
+	   	   end
+	   	   `EXE_MFLO_OP:	begin
 	   		moveres <= LO;
-	   	end
-	   	`EXE_MOVZ_OP:	begin
+	   	   end
+	   	   `EXE_MOVZ_OP:	begin
 	   		moveres <= reg1_i;
-	   	end
-	   	`EXE_MOVN_OP:	begin
+	   	   end
+	   	   `EXE_MOVN_OP:	begin
 	   		moveres <= reg1_i;
-	   	end
-	   	default : begin
-	   	end
-	    endcase
+	   	   end
+	   	   default : begin
+	   	   end
+	      endcase
 	end  //if
 end  //always
 
