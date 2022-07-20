@@ -48,35 +48,39 @@ module ex(
   end //always
 
 always @ (*) begin
-		if(rst == `RstEnable) begin
-			shiftres <= `ZeroWord;
-		end else begin
-			case (aluop_i)
-				`EXE_SLL_OP:			begin
-					shiftres <= reg2_i << reg1_i[4:0] ;
-				end
-				`EXE_SRL_OP:		begin
-					shiftres <= reg2_i >> reg1_i[4:0];
-				end
-				`EXE_SRA_OP:		begin
-					shiftres <= ({32{reg2_i[31]}} << (6'd32-{1'b0, reg1_i[4:0]})) 
+       if(rst == `RstEnable) begin
+	       shiftres <= `ZeroWord;
+       end else begin
+	       case (aluop_i)
+			`EXE_SLL_OP:begin  //逻辑左移
+				shiftres <= reg2_i << reg1_i[4:0] ;
+			end
+			`EXE_SRL_OP:begin  //逻辑右移
+				shiftres <= reg2_i >> reg1_i[4:0];
+			end
+			`EXE_SRA_OP:begin  //算术右移
+				shiftres <= ({32{reg2_i[31]}} << (6'd32-{1'b0, reg1_i[4:0]})) 
 												| reg2_i >> reg1_i[4:0];
-				end
-				default:				begin
-					shiftres <= `ZeroWord;
-				end
+			end
+			default:begin
+				shiftres <= `ZeroWord;
+			end
 			endcase
 		end    //if
 	end      //always
-////////第二段：依据aluse1_i指示的运算类型，选择一个运算结果作为最终结果，此处只有逻辑运算结果//////
+
+////////第二段：依据aluse1_i指示的运算类型，选择一个运算结果作为最终结果//////
  always @ (*) begin
 	wd_o <= wd_i;	 	 	
 	wreg_o <= wreg_i;
 	case ( alusel_i ) 
-	 	  `EXE_RES_LOGIC:	begin
-	 		   wdata_o <= logicout;  //如果运算类型时逻辑运算就把逻辑运算结果logicout赋给输出值
+	 	  `EXE_RES_LOGIC: begin
+	 		   wdata_o <= logicout;  //如果运算类型是逻辑运算就把逻辑运算结果logicout赋给输出值
 	 	   end
-	 	   default:	        begin
+	 	   `EXE_RES_SHIFT: begin
+	 		   wdata_o <= shiftres;  //如果运算类型是移位运算就把移位运算结果shiftres赋给输出值
+	 	   end
+		   default:	        begin
 	 		   wdata_o <= `ZeroWord;
 	 	   end
 	endcase
