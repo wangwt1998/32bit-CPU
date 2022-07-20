@@ -17,23 +17,23 @@ module ex(
 	input wire[`RegBus]           lo_i,
 
 	//回写阶段的指令是否要写HI、LO，用于检测HI、LO的数据相关
-	input wire[`RegBus]           wb_hi_i,
-	input wire[`RegBus]           wb_lo_i,
-	input wire                    wb_whilo_i,
+	input wire[`RegBus]           wb_hi_i,     //32bit，处于回写阶段的指令要写入HI寄存器的值
+	input wire[`RegBus]           wb_lo_i,     //32bit，处于回写阶段的指令要写入LO寄存器的值
+	input wire                    wb_whilo_i,  //1bit，处于回写阶段的指令是否要写入HILO寄存器
 	
 	//访存阶段的指令是否要写HI、LO，用于检测HI、LO的数据相关
-	input wire[`RegBus]           mem_hi_i,
-	input wire[`RegBus]           mem_lo_i,
-	input wire                    mem_whilo_i,
+	input wire[`RegBus]           mem_hi_i,     //32bit，处于访存阶段的指令要写入HI寄存器的值
+	input wire[`RegBus]           mem_lo_i,     //32bit，处于访存阶段的指令要写入LO寄存器的值
+	input wire                    mem_whilo_i,  //1bit，处于回写阶段的指令是否要写入HILO寄存器
 	
 	//执行的结果
 	output reg[`RegAddrBus]       wd_o,        //5bit，要写入的目的寄存器地址
 	output reg                    wreg_o,      //1bit，是否要写入目的寄存器
 	output reg[`RegBus]	      wdata_o      //32bit，要写入目的寄存器的值
 	
-	output reg[`RegBus]           hi_o,    
-	output reg[`RegBus]           lo_o,
-	output reg                    whilo_o	
+	output reg[`RegBus]           hi_o,        //32bit，执行（EX）阶段要写入HI寄存器的值
+	output reg[`RegBus]           lo_o,        //32bit，执行（EX）阶段要写入LO寄存器的值
+	output reg                    whilo_o      //1bit，执行（EX）阶段的指令是否要写入HILO寄存器 	
 );
 
   reg[`RegBus] logicout;     //保存逻辑运算结果
