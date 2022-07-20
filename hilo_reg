@@ -3,26 +3,27 @@
 module hilo_reg(
 
 	input	wire			clk,
-	input wire			rst,
+	input   wire			rst,
 	
 	//写端口
-	input wire			we,
-	input wire[`RegBus]		hi_i,
-	input wire[`RegBus]		lo_i,
+	input   wire			we,        //写使能信号
+	input   wire[`RegBus]		hi_i,
+	input   wire[`RegBus]		lo_i,
 	
 	//读端口1
-	output reg[`RegBus]             hi_o,
-	output reg[`RegBus]             lo_o
+	output   reg[`RegBus]           hi_o,
+	output   reg[`RegBus]           lo_o
 	
 );
 
 	always @ (posedge clk) begin
-		  if (rst == `RstEnable) begin
-			hi_o <= `ZeroWord;
+		  if (rst == `RstEnable) begin        //代码非常简单，如果复位信号有效，就复位。
+			hi_o <= `ZeroWord;                 
 			lo_o <= `ZeroWord;
-		  end else if((we == `WriteEnable)) begin
+		  end else if((we == `WriteEnable)) begin      
 			hi_o <= hi_i;
 			lo_o <= lo_i;
+		     //如果如果复位信号无效，判断写使能信号是否有效，若有效，将输入作为新值并且通过接口输出。
 		  end
 	end
 
