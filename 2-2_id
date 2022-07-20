@@ -195,6 +195,37 @@ module id(
 		                end
 		  endcase  //case op
 	
+	      if (inst_i[31:21] == 11'b00000000000) begin
+		  	if (op3 == `EXE_SLL) begin
+		  		wreg_o <= `WriteEnable;		
+				aluop_o <= `EXE_SLL_OP;
+		  		alusel_o <= `EXE_RES_SHIFT; 
+				reg1_read_o <= 1'b0;	reg2_read_o <= 1'b1;	  	
+				imm[4:0] <= inst_i[10:6];		
+				wd_o <= inst_i[15:11];
+				instvalid <= `InstValid;	
+			  end else if ( op3 == `EXE_SRL ) begin
+		  		wreg_o <= `WriteEnable;		
+				aluop_o <= `EXE_SRL_OP;
+		  		alusel_o <= `EXE_RES_SHIFT; 
+				reg1_read_o <= 1'b0;	reg2_read_o <= 1'b1;	  	
+				imm[4:0] <= inst_i[10:6];		
+				wd_o <= inst_i[15:11];
+				instvalid <= `InstValid;	
+			  end else if ( op3 == `EXE_SRA ) begin
+		  		wreg_o <= `WriteEnable;		
+				aluop_o <= `EXE_SRA_OP;
+		  		alusel_o <= `EXE_RES_SHIFT; 
+				reg1_read_o <= 1'b0;	reg2_read_o <= 1'b1;	  	
+				imm[4:0] <= inst_i[10:6];		
+				wd_o <= inst_i[15:11];
+				instvalid <= `InstValid;	
+			  end
+			end		  
+		  
+		end  //if
+	end  //always
+	
 //由于数据前推，给reg1_o的赋值增加了两种情况：
  //1. 如果regflie模块读端口1要读取的寄存器就是执行阶段要写的目的寄存器，那么直接把执行阶段的结果ex_wdata_i作为reg1_o的值；
  //2. 如果regflie模块读端口1要读取的寄存器就是访存阶段要写的目的寄存器，那么直接把访存阶段的结果ex_wdata_i作为reg1_o的值；
