@@ -150,6 +150,24 @@ end  //always
 	endcase
  end	
  
- 
+ always @ (*) begin
+	if(rst == `RstEnable) begin
+		whilo_o <= `WriteDisable;
+		hi_o <= `ZeroWord;
+		lo_o <= `ZeroWord;		
+	end else if(aluop_i == `EXE_MTHI_OP) begin
+		whilo_o <= `WriteEnable;
+		hi_o <= reg1_i;
+		lo_o <= LO;
+	end else if(aluop_i == `EXE_MTLO_OP) begin
+		whilo_o <= `WriteEnable;
+		hi_o <= HI;
+		lo_o <= reg1_i;
+	end else begin
+		whilo_o <= `WriteDisable;
+		hi_o <= `ZeroWord;
+		lo_o <= `ZeroWord;
+	end				
+end			
 
 endmodule
