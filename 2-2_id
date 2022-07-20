@@ -155,14 +155,14 @@ module id(
 							`EXE_MTHI: begin
 								wreg_o <= `WriteDisable;		
 								aluop_o <= `EXE_MTHI_OP;
-		  						reg1_read_o <= 1'b1;	
-								reg2_read_o <= 1'b0; instvalid <= `InstValid;	
+		  						reg1_read_o <= 1'b1;	reg2_read_o <= 1'b0; 
+								instvalid <= `InstValid;	
 								end
 							`EXE_MTLO: begin
 								wreg_o <= `WriteDisable;		
 								aluop_o <= `EXE_MTLO_OP;
-		  						reg1_read_o <= 1'b1;	
-								reg2_read_o <= 1'b0; instvalid <= `InstValid;	
+		  						reg1_read_o <= 1'b1;	reg2_read_o <= 1'b0; 
+								instvalid <= `InstValid;	
 								end
 							`EXE_MOVN: begin
 								aluop_o <= `EXE_MOVN_OP;
