@@ -12,6 +12,20 @@ module ex(
 	input wire[`RegAddrBus]       wd_i,        //5bit，要写入的目的寄存器地址
 	input wire                    wreg_i,      //1bit，是否要写入目的寄存器
 
+        //HI、LO寄存器的值
+	input wire[`RegBus]           hi_i,
+	input wire[`RegBus]           lo_i,
+
+	//回写阶段的指令是否要写HI、LO，用于检测HI、LO的数据相关
+	input wire[`RegBus]           wb_hi_i,
+	input wire[`RegBus]           wb_lo_i,
+	input wire                    wb_whilo_i,
+	
+	//访存阶段的指令是否要写HI、LO，用于检测HI、LO的数据相关
+	input wire[`RegBus]           mem_hi_i,
+	input wire[`RegBus]           mem_lo_i,
+	input wire                    mem_whilo_i,
+	
 	//执行的结果
 	output reg[`RegAddrBus]       wd_o,        //5bit，要写入的目的寄存器地址
 	output reg                    wreg_o,      //1bit，是否要写入目的寄存器
