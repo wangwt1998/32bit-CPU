@@ -90,18 +90,17 @@ always @ (*) begin
 	end      //always
 
 //得到最新的HI、LO寄存器的值，此处要解决指令数据相关问题
-//首先判断访存阶段的指令是否要写HILO，如果是那么HILO的值就是访存阶段的值
-//然后判断回写阶段的指令是否要写HILO，如果是那么HILO的值就是回写阶段的值（一定要先判断访存，再判断回写，因为访存阶段的指令一定在回写阶段指令的后面）
-//如果上述都不是，那么HILO的值就是当前HILO的值。
+//（一定要先判断访存，再判断回写，因为访存阶段的指令一定在回写阶段指令的后面）
+
 always @ (*) begin
 	if(rst == `RstEnable) begin
 		{HI,LO} <= {`ZeroWord,`ZeroWord};
 	end else if(mem_whilo_i == `WriteEnable) begin
-		{HI,LO} <= {mem_hi_i,mem_lo_i};
+		{HI,LO} <= {mem_hi_i,mem_lo_i};   //首先判断访存阶段的指令是否要写HILO，如果是那么HILO的值就是访存阶段的值
 	end else if(wb_whilo_i == `WriteEnable) begin
-		{HI,LO} <= {wb_hi_i,wb_lo_i};
+		{HI,LO} <= {wb_hi_i,wb_lo_i};   //然后判断回写阶段的指令是否要写HILO，如果是那么HILO的值就是回写阶段的值
 	end else begin
-		{HI,LO} <= {hi_i,lo_i};	
+		{HI,LO} <= {hi_i,lo_i};	   //如果上述都不是，那么HILO的值就是当前HILO的值。
 	end
 end	
 
@@ -130,7 +129,7 @@ always @ (*) begin
 	end  //if
 end  //always
 
-////////第二段：依据aluse1_i指示的运算类型，选择一个运算结果作为最终结果//////
+////////依据aluse1_i指示的运算类型，选择一个运算结果作为最终结果//////
  always @ (*) begin
 	wd_o <= wd_i;	 	 	
 	wreg_o <= wreg_i;
@@ -141,10 +140,16 @@ end  //always
 	 	   `EXE_RES_SHIFT: begin
 	 		   wdata_o <= shiftres;  //如果运算类型是移位运算就把移位运算结果shiftres赋给输出值
 	 	   end
+		   `EXE_RES_MOVE:	begin
+	 		   wdata_o <= moveres;  //如果运算类型是移动运算就把移动运算结果shiftres赋给输出值
+	 	   end	 	
+		   
 		   default:	        begin
 	 		   wdata_o <= `ZeroWord;
 	 	   end
 	endcase
  end	
+ 
+ 
 
 endmodule
