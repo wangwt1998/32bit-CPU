@@ -10,11 +10,18 @@ module mem(
 	input wire[`RegAddrBus]       wd_i,        //5bit，执行阶段传过来的，要写入的目的寄存器地址
 	input wire                    wreg_i,      //1bit，执行阶段传过来的，是否有要写入的目的寄存器
 	input wire[`RegBus]	      wdata_i,     //32bit，执行阶段传过来的，要写入目的寄存器的值
+	input wire[`RegBus]           hi_i,        //32bit，执行阶段传过来的，要写入HI的值
+	input wire[`RegBus]           lo_i,        //32bit，执行阶段传过来的，要写入LO的值
+	input wire                    whilo_i,	   //1bit，执行阶段传过来的，是否要写入HILO
 	
 	//送到回写阶段的信息
 	output reg[`RegAddrBus]      wd_o,         //5bit，送到回写阶段的，要写入的目的寄存器地址
 	output reg                   wreg_o,       //1bit，送到回写阶段的，是否有要写入的目的寄存器
 	output reg[`RegBus]	     wdata_o       //32bit，送到回写阶段的，要写入目的寄存器的值
+	output reg[`RegBus]          hi_o,         //32bit，送到回写阶段的，要写入HI的值
+	output reg[`RegBus]          lo_o,         //32bit，送到回写阶段的，要写入LO的值
+	output reg                   whilo_o       //1bit，执行阶段传过来的，是否要写入HILO
+	
 );
 	
 	always @ (*) begin  //组合逻辑电路
@@ -22,10 +29,16 @@ module mem(
 			        wd_o <= `NOPRegAddr;         //复位，地址为0地址
 			        wreg_o <= `WriteDisable;     //复位，写入使能信号无效
 		                wdata_o <= `ZeroWord;        //复位，写入的值为0
+				hi_o <= `ZeroWord;
+		                lo_o <= `ZeroWord;
+		                whilo_o <= `WriteDisable;
 		    end else begin
-		                wd_o <= wd_i;                //将三个值依次传递下去就可以
+		                wd_o <= wd_i;                //将几个值依次传递下去就可以
 			        wreg_o <= wreg_i;
 			        wdata_o <= wdata_i;
+				hi_o <= hi_i;
+			        lo_o <= lo_i;
+			        whilo_o <= whilo_i;	
 		    end   //if
 	end    //always
 
