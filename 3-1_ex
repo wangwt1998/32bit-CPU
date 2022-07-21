@@ -113,12 +113,14 @@ assign reg2_i_mux = ((aluop_i == `EXE_SUB_OP) || (aluop_i == `EXE_SUBU_OP) || (a
 //     第一个操作数reg1_i是否小于第二个操作数reg2_i 
 assign result_sum = reg1_i + reg2_i_mux;										 
 
-//（3）计算是否溢出，加法指令（add和addi）、减法指令（sub）需要判断是否溢出，（注意addu和addiu不用判断是否溢出，永远都会存）
-       满足以下两种情况之一时，有溢出：
-       A. reg1_i为正数，reg2_i_mux为正数，但是两者之和为负数（判断最高位，第31位的正负即可）
-       B. reg1_i为负数，reg2_i_mux为负数，但是两者之和为正数
+//（3）确定ov_sum的值：
+//   计算是否溢出，加法指令（add和addi）、减法指令（sub）需要判断是否溢出，（注意addu和addiu不用判断是否溢出，永远都会存）
+//   满足以下两种情况之一时，有溢出：
+//  A. reg1_i为正数，reg2_i_mux为正数，但是两者之和为负数（判断最高位，第31位的正负即可）
+//  B. reg1_i为负数，reg2_i_mux为负数，但是两者之和为正数
 assign ov_sum = ((!reg1_i[31] && !reg2_i_mux[31]) && result_sum[31]) || ((reg1_i[31] && reg2_i_mux[31]) && (!result_sum[31])); 
-									 							
+
+//（4）
 assign reg1_lt_reg2 = ((aluop_i == `EXE_SLT_OP)) ? ((reg1_i[31] && !reg2_i[31]) ||  (!reg1_i[31] && !reg2_i[31] && result_sum[31]) || 
                       (reg1_i[31] && reg2_i[31] && result_sum[31])) : (reg1_i < reg2_i);
 
