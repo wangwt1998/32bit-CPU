@@ -6,6 +6,8 @@ module pc_reg(
 
 	input  wire	              clk,      //1bit，时钟信号
 	input  wire	              rst,      //1bit，复位信号
+		
+	input wire[5:0]               stall,    //来自控制模块的信息
 	
 	output reg[`InstAddrBus]      pc,       //32bit，要读取的指令地址
 	output reg                    ce        //1bit，指令存储器使能信号
@@ -23,7 +25,7 @@ module pc_reg(
 	always @ (posedge clk) begin
 		if (ce == `ChipDisable) begin
 			pc <= 32'h00000000;    //指令存储器禁用的时候，pc为0
-		end else begin
+		end else if(stall[0] == `NoStop) begin
 	 		pc <= pc + 4'h4;       //指令存储器使能的时候，pc的值每时钟周期加4
 			                       //因为我们设计的open MIPS是按照字节寻址的，一条指令32位，所以每周期加4
 		end
