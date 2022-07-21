@@ -309,7 +309,7 @@ always @ (*) begin
 		whilo_o <= `WriteDisable;
 		hi_o <= `ZeroWord;
 		lo_o <= `ZeroWord;		
-	end else if((aluop_i == `EXE_MULT_OP) || (aluop_i == `EXE_MULTU_OP)) begin
+	end else if((aluop_i == `EXE_MULT_OP) || (aluop_i == `EXE_MULTU_OP)) begin    //mult和multu指令
 		whilo_o <= `WriteEnable;
 		hi_o <= mulres[63:32];
 		lo_o <= mulres[31:0];
