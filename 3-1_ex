@@ -101,9 +101,16 @@ always @ (*) begin
 		end    //if
 	end      //always
 
-//（1）如果是减法或者有符号比较运算
+//（1）确定reg2_i_mux的值：
+//       如果是减法sub,subu，，或者有符号比较运算stl，那么reg2_i_mux等于第二个操作数reg2_i的补码，
+//       否则reg2_i_mux就等于第二个操作数reg2_i。
 assign reg2_i_mux = ((aluop_i == `EXE_SUB_OP) || (aluop_i == `EXE_SUBU_OP) || (aluop_i == `EXE_SLT_OP) ) ? (~reg2_i)+1 : reg2_i;
 
+//（2）确定result_sum的值：
+//  A. 如果是add,addu,addi,addiu运算，此时reg2_i_mux就是第二个操作数reg2_i，所以result_sum就是加法运算的结果。
+//  B. 如果是sub,subu运算，此时reg2_i_mux是第二个操作数reg2_i的补码，所以result_sum就是减法运算的结果。
+//  C. 如果是有符号比较运算stl，此时此时reg2_i_mux还是第二个操作数reg2_i的补码，所以result_sum还是减法运算的结果，可以通过判断减法结果是否小于0，进而判断
+//     第一个操作数reg1_i是否小于第二个操作数reg2_i 
 assign result_sum = reg1_i + reg2_i_mux;										 
 
 assign ov_sum = ((!reg1_i[31] && !reg2_i_mux[31]) && result_sum[31]) || ((reg1_i[31] && reg2_i_mux[31]) && (!result_sum[31])); 
