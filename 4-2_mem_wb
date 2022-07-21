@@ -21,6 +21,7 @@ module mem_wb(
 	output reg[`RegBus]          wb_lo,                  //32bit，送到回写阶段的，要写入LO的值
 	output reg                   wb_whilo 	             //1bit，送到回写阶段的，是否要写入HILO
 	
+	input wire[5:0]               stall,	             //来自控制模块的信息
 );
 
 	always @ (posedge clk) begin   //一个简单的时序逻辑电路
@@ -31,7 +32,14 @@ module mem_wb(
 				wb_hi <= `ZeroWord;
 		                wb_lo <= `ZeroWord;
 		                wb_whilo <= `WriteDisable;	
-		    end else begin
+		    end else if(stall[4] == `Stop && stall[5] == `NoStop) begin
+			        wb_wd <= `NOPRegAddr;
+			        wb_wreg <= `WriteDisable;
+		                wb_wdata <= `ZeroWord;
+		                wb_hi <= `ZeroWord;
+		                wb_lo <= `ZeroWord;
+		                wb_whilo <= `WriteDisable;	
+		    end else if(stall[4] == `NoStop) begin
 			        wb_wd <= mem_wd;             //将几个值依次传递下去就可以
 			        wb_wreg <= mem_wreg;
 			        wb_wdata <= mem_wdata;
