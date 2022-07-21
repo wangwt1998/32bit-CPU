@@ -16,9 +16,11 @@ module ctrl(
 		    if(rst == `RstEnable) begin
 			       stall <= 6'b000000;
 		    end else if(stallreq_from_ex == `Stop) begin
-			       stall <= 6'b001111;
+			       stall <= 6'b001111;                   //执行阶段暂停，所以PC地址、取指、译码、执行阶段暂停，访存回写阶段继续
+			                                             //所以低4位为1，表示暂停。
 		    end else if(stallreq_from_id == `Stop) begin
-		        	stall <= 6'b000111;			
+		        	stall <= 6'b000111;		     //译码阶段暂停，所以PC地址、取指、译码阶段暂停，执行访存回写阶段继续
+				                                     //所以低3位为1，表示暂停。
 		    end else begin
 		        	stall <= 6'b000000;
 	     	end //if
