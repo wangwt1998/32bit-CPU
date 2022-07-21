@@ -104,23 +104,37 @@ always @ (*) begin
 //（1）确定reg2_i_mux的值：
 //       如果是减法sub,subu，，或者有符号比较运算stl，那么reg2_i_mux等于第二个操作数reg2_i的补码，
 //       否则reg2_i_mux就等于第二个操作数reg2_i。
+
 assign reg2_i_mux = ((aluop_i == `EXE_SUB_OP) || (aluop_i == `EXE_SUBU_OP) || (aluop_i == `EXE_SLT_OP) ) ? (~reg2_i)+1 : reg2_i;
+
 
 //（2）确定result_sum的值：
 //  A. 如果是add,addu,addi,addiu运算，此时reg2_i_mux就是第二个操作数reg2_i，所以result_sum就是加法运算的结果。
 //  B. 如果是sub,subu运算，此时reg2_i_mux是第二个操作数reg2_i的补码，所以result_sum就是减法运算的结果。
 //  C. 如果是有符号比较运算stl，此时此时reg2_i_mux还是第二个操作数reg2_i的补码，所以result_sum还是减法运算的结果，可以通过判断减法结果是否小于0，进而判断
 //     第一个操作数reg1_i是否小于第二个操作数reg2_i 
+
 assign result_sum = reg1_i + reg2_i_mux;										 
+
 
 //（3）确定ov_sum的值：
 //   计算是否溢出，加法指令（add和addi）、减法指令（sub）需要判断是否溢出，（注意addu和addiu不用判断是否溢出，永远都会存）
 //   满足以下两种情况之一时，有溢出：
 //  A. reg1_i为正数，reg2_i_mux为正数，但是两者之和为负数（判断最高位，第31位的正负即可）
 //  B. reg1_i为负数，reg2_i_mux为负数，但是两者之和为正数
+
 assign ov_sum = ((!reg1_i[31] && !reg2_i_mux[31]) && result_sum[31]) || ((reg1_i[31] && reg2_i_mux[31]) && (!result_sum[31])); 
 
-//（4）
+
+//（4）确定reg1_lt_reg2的值：
+//   计算操作数1是否小于操作数2，分两种情况：
+//  A. 有符号比较slt：（aluop_i == `EXE_SLT_OP为真）
+          A1. reg1_i为负数、reg2_i为正数，显然reg1_i小于reg2_i
+	  B1. reg1_i为正数、reg2_i为正数，并且reg1_i减去reg2_i小于0（即result_sum为负），此时也有reg1_i小于reg2_i
+	  C1. reg1_i为负数、reg2_i为负数，并且reg1_i减去reg2_i小于0（即result_sum为负），此时也有reg1_i小于reg2_i
+    B. 无符号比较sltu：（aluop_i == `EXE_SLT_OP为假）
+          直接使用比较运算符比较reg1_i与reg2_i
+
 assign reg1_lt_reg2 = ((aluop_i == `EXE_SLT_OP)) ? ((reg1_i[31] && !reg2_i[31]) ||  (!reg1_i[31] && !reg2_i[31] && result_sum[31]) || 
                       (reg1_i[31] && reg2_i[31] && result_sum[31])) : (reg1_i < reg2_i);
 
