@@ -207,21 +207,22 @@ assign opdata1_mult = (((aluop_i == `EXE_MUL_OP) || (aluop_i == `EXE_MULT_OP)) &
 //（2）取得乘法操作的乘数，如果是有符号乘法且乘数是负数，那么取补码
 assign opdata2_mult = (((aluop_i == `EXE_MUL_OP) || (aluop_i == `EXE_MULT_OP)) && (reg2_i[31] == 1'b1)) ? (~reg2_i + 1) : reg2_i;		
 													
-
+//（3）得到临时乘法结果，保存在变量hilo_temp中
 assign hilo_temp = opdata1_mult * opdata2_mult;																				
 
-	always @ (*) begin
-		if(rst == `RstEnable) begin
-			mulres <= {`ZeroWord,`ZeroWord};
-		end else if ((aluop_i == `EXE_MULT_OP) || (aluop_i == `EXE_MUL_OP))begin
-			if(reg1_i[31] ^ reg2_i[31] == 1'b1) begin
-				mulres <= ~hilo_temp + 1;
-			end else begin
-			  mulres <= hilo_temp;
-			end
+//（4）对临时乘法结果进行修正
+always @ (*) begin
+	if(rst == `RstEnable) begin
+		mulres <= {`ZeroWord,`ZeroWord};
+	end else if ((aluop_i == `EXE_MULT_OP) || (aluop_i == `EXE_MUL_OP))begin
+		if(reg1_i[31] ^ reg2_i[31] == 1'b1) begin
+			mulres <= ~hilo_temp + 1;
 		end else begin
-				mulres <= hilo_temp;
+			mulres <= hilo_temp;
 		end
+	end else begin
+			mulres <= hilo_temp;
+	end
 	end
 
 
