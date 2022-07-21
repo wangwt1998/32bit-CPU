@@ -232,8 +232,6 @@ always @ (*) begin
 	end
 
 
-
-
 //得到最新的HI、LO寄存器的值，此处要解决指令数据相关问题
 //（一定要先判断访存，再判断回写，因为访存阶段的指令一定在回写阶段指令的后面）
 
@@ -275,9 +273,13 @@ always @ (*) begin
 end  //always
 
 ////////依据aluse1_i指示的运算类型，选择一个运算结果作为最终结果//////
- always @ (*) begin
+always @ (*) begin
 	wd_o <= wd_i;	 	 	
-	wreg_o <= wreg_i;
+	if(((aluop_i == `EXE_ADD_OP) || (aluop_i == `EXE_ADDI_OP) || (aluop_i == `EXE_SUB_OP)) && (ov_sum == 1'b1)) begin
+	 	wreg_o <= `WriteDisable;
+	 end else begin
+	        wreg_o <= wreg_i;
+	end
 	case ( alusel_i ) 
 	 	  `EXE_RES_LOGIC: begin
 	 		   wdata_o <= logicout;  //如果运算类型是逻辑运算就把逻辑运算结果logicout赋给输出值
@@ -285,12 +287,17 @@ end  //always
 	 	   `EXE_RES_SHIFT: begin
 	 		   wdata_o <= shiftres;  //如果运算类型是移位运算就把移位运算结果shiftres赋给输出值
 	 	   end
-		   `EXE_RES_MOVE:	begin
+		   `EXE_RES_MOVE:  begin
 	 		   wdata_o <= moveres;  //如果运算类型是移动运算就把移动运算结果shiftres赋给输出值
 	 	   end	 	
-		   
-		   default:	        begin
-	 		   wdata_o <= `ZeroWord;
+		   `EXE_RES_ARITHMETIC:	begin
+	 		wdata_o <= arithmeticres;
+	 	   end
+	 	   `EXE_RES_MUL:  begin
+	 		wdata_o <= mulres[31:0];
+	 	   end	 	
+		   default:  begin
+	 		wdata_o <= `ZeroWord;
 	 	   end
 	endcase
  end	
