@@ -25,6 +25,8 @@ module id(
 	output reg                    wreg_o              //1bit，是否有要写入的目的寄存器
 	output reg[`RegAddrBus]       wd_o,               //5bit，要写入的目的寄存器地址
 	
+	output wire                   stallreq	
+	
 	//为了进行数据前推，处于执行阶段的指令要写入的目的寄存器信息
 	input wire		      ex_wreg_i,
 	input wire[`RegBus]	      ex_wdata_i,
