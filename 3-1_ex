@@ -211,6 +211,11 @@ assign opdata2_mult = (((aluop_i == `EXE_MUL_OP) || (aluop_i == `EXE_MULT_OP)) &
 assign hilo_temp = opdata1_mult * opdata2_mult;																				
 
 //（4）对临时乘法结果进行修正
+     A. 如果是有符号乘法指令mult、mul，那么需要修正临时乘法结果，如下：
+          A1. 如果被乘数与乘数两者一正一负，（结果为负）那么需要修正临时乘法结果，hilo_temp求补码作为最终的mulres
+	  A2. 如果被乘数与乘数同号，（结果为正）那么hilo_temp的值就作为最终的mulres
+     B. 如果是无符号乘法指令multu，那么hilo_temp的值就作为最终的mulres
+
 always @ (*) begin
 	if(rst == `RstEnable) begin
 		mulres <= {`ZeroWord,`ZeroWord};
