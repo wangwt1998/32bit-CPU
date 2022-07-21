@@ -233,13 +233,17 @@ module id(
 							`EXE_MULT: begin
 								wreg_o <= `WriteDisable;
 								aluop_o <= `EXE_MULT_OP;
-		  						reg1_read_o <= 1'b1;	reg2_read_o <= 1'b1; 
+		  						//乘法结果不保存到通用寄存器中，运算类型保持初值不变
+								//运算子类型明确了就可以
+								reg1_read_o <= 1'b1;	reg2_read_o <= 1'b1; 
 								instvalid <= `InstValid;	
 								end
 							`EXE_MULTU: begin
 								wreg_o <= `WriteDisable;
 								aluop_o <= `EXE_MULTU_OP;
-		  						reg1_read_o <= 1'b1;	reg2_read_o <= 1'b1; 
+		  						//乘法结果不保存到通用寄存器中，运算类型保持初值不变
+								//运算子类型明确了就可以
+								reg1_read_o <= 1'b1;	reg2_read_o <= 1'b1; 
 								instvalid <= `InstValid;	
 								end 	
 						      
