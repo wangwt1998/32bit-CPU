@@ -164,6 +164,7 @@ always @ (*) begin
 					arithmeticres <= result_sum; 
 				end		
 				`EXE_CLZ_OP: begin  
+					//?:三目操作符的嵌套，判断reg1_i[31]是否为1，如果是输出数字，如果不是继续判断下一个，数0的个数
 					arithmeticres <= reg1_i[31] ? 0 : reg1_i[30] ? 1 : reg1_i[29] ? 2 :
 								reg1_i[28] ? 3 : reg1_i[27] ? 4 : reg1_i[26] ? 5 :
 								reg1_i[25] ? 6 : reg1_i[24] ? 7 : reg1_i[23] ? 8 : 
@@ -177,6 +178,7 @@ always @ (*) begin
 								reg1_i[1] ? 30 : reg1_i[0] ? 31 : 32 ;					 
 				end
 				`EXE_CLO_OP:		begin
+					//?:三目操作符的嵌套，判断取反之后的reg1_i_not[31]是否为1，如果是输出数字，如果不是继续判断下一个，数1的个数
 					arithmeticres <= (reg1_i_not[31] ? 0 : reg1_i_not[30] ? 1 : reg1_i_not[29] ? 2 :
 								reg1_i_not[28] ? 3 : reg1_i_not[27] ? 4 : reg1_i_not[26] ? 5 :
 								reg1_i_not[25] ? 6 : reg1_i_not[24] ? 7 : reg1_i_not[23] ? 8 : 
