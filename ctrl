@@ -2,7 +2,7 @@
 
 module ctrl(
  
-	    input wire									 rst,                  //1bit，复位信号
+	    input wire			 rst,                  //1bit，复位信号
 
 	    input wire                   stallreq_from_id,     //1bit，来自译码阶段的暂停请求
 
