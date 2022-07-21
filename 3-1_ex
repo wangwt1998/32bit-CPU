@@ -148,7 +148,7 @@ assign reg1_lt_reg2 = ((aluop_i == `EXE_SLT_OP)) ? ((reg1_i[31] && !reg2_i[31]) 
 assign reg1_i_not = ~reg1_i;	
 
 
-///////根据不同的算术运算类型，给arithmeticres赋值//////////
+//////////////////根据不同的算术运算类型，给arithmeticres赋值///////////////////////////
 always @ (*) begin
 	if(rst == `RstEnable) begin
 			arithmeticres <= `ZeroWord;
@@ -198,14 +198,17 @@ always @ (*) begin
 		end
 	end
 
-  //取得乘法操作的操作数，如果是有符号除法且操作数是负数，那么取反加一
-	assign opdata1_mult = (((aluop_i == `EXE_MUL_OP) || (aluop_i == `EXE_MULT_OP))
-													&& (reg1_i[31] == 1'b1)) ? (~reg1_i + 1) : reg1_i;
 
-  assign opdata2_mult = (((aluop_i == `EXE_MUL_OP) || (aluop_i == `EXE_MULT_OP))
-													&& (reg2_i[31] == 1'b1)) ? (~reg2_i + 1) : reg2_i;		
+/////////////////////////// 进行乘法运算 ///////////////////////////////////
 
-  assign hilo_temp = opdata1_mult * opdata2_mult;																				
+//（1）取得乘法操作的被乘数，如果是有符号乘法且操作数是负数，那么取补码
+assign opdata1_mult = (((aluop_i == `EXE_MUL_OP) || (aluop_i == `EXE_MULT_OP)) && (reg1_i[31] == 1'b1)) ? (~reg1_i + 1) : reg1_i;
+													
+
+assign opdata2_mult = (((aluop_i == `EXE_MUL_OP) || (aluop_i == `EXE_MULT_OP)) && (reg2_i[31] == 1'b1)) ? (~reg2_i + 1) : reg2_i;		
+													
+
+assign hilo_temp = opdata1_mult * opdata2_mult;																				
 
 	always @ (*) begin
 		if(rst == `RstEnable) begin
