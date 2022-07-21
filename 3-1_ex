@@ -274,7 +274,8 @@ end  //always
 
 ////////依据aluse1_i指示的运算类型，选择一个运算结果作为最终结果//////
 always @ (*) begin
-	wd_o <= wd_i;	 	 	
+	wd_o <= wd_i;	
+	               //如果是add,addi,sub指令，且发生溢出，那么设置wreg_o为WriteDisable，不写入目的寄存器。
 	if(((aluop_i == `EXE_ADD_OP) || (aluop_i == `EXE_ADDI_OP) || (aluop_i == `EXE_SUB_OP)) && (ov_sum == 1'b1)) begin
 	 	wreg_o <= `WriteDisable;
 	 end else begin
@@ -290,10 +291,10 @@ always @ (*) begin
 		   `EXE_RES_MOVE:  begin
 	 		   wdata_o <= moveres;  //如果运算类型是移动运算就把移动运算结果shiftres赋给输出值
 	 	   end	 	
-		   `EXE_RES_ARITHMETIC:	begin
+		   `EXE_RES_ARITHMETIC:	begin   //除乘法指令外的简单算术指令
 	 		wdata_o <= arithmeticres;
 	 	   end
-	 	   `EXE_RES_MUL:  begin
+	 	   `EXE_RES_MUL:  begin         //mul乘法指令
 	 		wdata_o <= mulres[31:0];
 	 	   end	 	
 		   default:  begin
@@ -308,6 +309,10 @@ always @ (*) begin
 		whilo_o <= `WriteDisable;
 		hi_o <= `ZeroWord;
 		lo_o <= `ZeroWord;		
+	end else if((aluop_i == `EXE_MULT_OP) || (aluop_i == `EXE_MULTU_OP)) begin
+		whilo_o <= `WriteEnable;
+		hi_o <= mulres[63:32];
+		lo_o <= mulres[31:0];
 	end else if(aluop_i == `EXE_MTHI_OP) begin  //判断运算子类型，是HI，使能端enable，寄存器1口读出的值给到HI，LO的值保持不变
 		whilo_o <= `WriteEnable;
 		hi_o <= reg1_i;
